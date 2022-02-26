@@ -5,12 +5,13 @@ import (
 )
 
 type JobQ struct {
-	pollInterval time.Duration
+	// Interval to waitInterval before checking if there are jobs
+	waitInterval time.Duration
 	queue        Queue
 }
 
 func NewJobQ(pollInterval time.Duration, queue Queue) *JobQ {
-	return &JobQ{pollInterval: pollInterval, queue: queue}
+	return &JobQ{waitInterval: pollInterval, queue: queue}
 }
 
 func (jq *JobQ) Add(job *Job) {
@@ -25,11 +26,11 @@ func (jq *JobQ) Watch(block bool) {
 	// Stop goroutine ref: https://stackoverflow.com/a/37997989/7550732
 	watch := func(jq *JobQ) {
 		for {
-			if jq.queue.HasReadyJob() {
-				job := jq.queue.PopJob()
-				_ = job.Run()
+			// Run all ready jobs
+			for jq.queue.HasReadyJob() {
+				jq.queue.PopJob().Run()
 			}
-			time.Sleep(jq.pollInterval)
+			time.Sleep(jq.waitInterval)
 		}
 	}
 

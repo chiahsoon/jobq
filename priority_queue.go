@@ -30,19 +30,18 @@ func (pq *PriorityQueue) Peek() *Job {
 	return (*pq)[0]
 }
 
-func (pq *PriorityQueue) HasReadyJobs() bool {
-	// Extensible - e.g. check if Priority as Unix time has passed, etc.
+func (pq *PriorityQueue) HasReadyJob() bool {
 	return pq.Len() > 0
 }
 
-// For both Heap/Queue implementation
+// For both Heap & Queue implementation
 func (pq PriorityQueue) Len() int { return len(pq) }
 
 // Heap Methods
 func (pq PriorityQueue) Less(i, j int) bool {
 	// container/heap is a minheap by default;
-	// return True when 'i' should be popped first
-	return pq[i].Priority > pq[j].Priority
+	// return True when 'j' should be popped first
+	return pq[i].Priority < pq[j].Priority
 }
 
 func (pq PriorityQueue) Swap(i, j int) {

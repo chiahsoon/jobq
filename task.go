@@ -1,6 +1,6 @@
 package jobq
 
 type Task interface {
-	Run() error
-	Label() string
+	Desc() string
+	Run()
 }

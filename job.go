@@ -7,11 +7,8 @@ type Job struct {
 	index    int
 }
 
-func (j *Job) Run() error {
+func (j *Job) Run() {
 	for _, task := range j.Tasks {
-		if err := task.Run(); err != nil {
-			return err
-		}
+		task.Run()
 	}
-	return nil
 }
