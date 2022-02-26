@@ -10,8 +10,8 @@ type JobQ struct {
 	queue        Queue
 }
 
-func NewJobQ(pollInterval time.Duration, queue Queue) *JobQ {
-	return &JobQ{waitInterval: pollInterval, queue: queue}
+func NewJobQ(waitInterval time.Duration, queue Queue) *JobQ {
+	return &JobQ{waitInterval: waitInterval, queue: queue}
 }
 
 func (jq *JobQ) Add(job *Job) {
