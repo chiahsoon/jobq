@@ -1,5 +1,7 @@
 # JobQ
 
+[![Go Reference](https://pkg.go.dev/badge/github.com/chiahsoon/jobq.svg)](https://pkg.go.dev/github.com/chiahsoon/jobq)
+
 > *Queue == Que == Q*
 
 A basic job queue implemented in Go.
