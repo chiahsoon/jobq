@@ -33,9 +33,10 @@ func TestBasicSetNumTask(t *testing.T) {
 	val := originalVal
 	task := SetNumTask{DestVal: &val, SrcVal: originalVal + 1}
 	job := jobq.Job{
-		Label:    "Basic Job",
-		Tasks:    []jobq.Task{&task},
-		Priority: 1,
+		Label:      "Basic Job",
+		Tasks:      []jobq.Task{&task},
+		Priority:   1,
+		Concurrent: true,
 	}
 	queue := jobq.PriorityQueue{}
 	jq := jobq.NewJobQ(0, &queue)
@@ -53,15 +54,17 @@ func TestPriority(t *testing.T) {
 	val := 10
 	higherPriorityTask := SetNumTask{SrcVal: 20, DestVal: &val}
 	higherPriorityJob := jobq.Job{
-		Label:    "Lower Priority Job",
-		Tasks:    []jobq.Task{&higherPriorityTask},
-		Priority: 2,
+		Label:      "Lower Priority Job",
+		Tasks:      []jobq.Task{&higherPriorityTask},
+		Priority:   2,
+		Concurrent: true,
 	}
 	lowerPriorityTask := SetNumTask{SrcVal: 15, DestVal: &val}
 	lowerPriorityJob := jobq.Job{
-		Label:    "Higher Priority Job",
-		Tasks:    []jobq.Task{&lowerPriorityTask},
-		Priority: 1,
+		Label:      "Higher Priority Job",
+		Tasks:      []jobq.Task{&lowerPriorityTask},
+		Priority:   1,
+		Concurrent: true,
 	}
 
 	queue := jobq.PriorityQueue{}
@@ -89,7 +92,8 @@ func TestTasksInSameConcurrentJobShouldRunConcurrently(t *testing.T) {
 			&HeavyIncrTask{Name: "2", Delay: delay, DestVal: &val},
 			&HeavyIncrTask{Name: "3", Delay: delay, DestVal: &val},
 		},
-		Priority: 0,
+		Priority:   0,
+		Concurrent: true,
 	}
 
 	queue := jobq.PriorityQueue{}

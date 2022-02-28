@@ -6,10 +6,11 @@ import (
 )
 
 type Job struct {
-	Label    string
-	Tasks    []Task
-	Priority int
-	index    int
+	Label      string
+	Tasks      []Task
+	Priority   int
+	Concurrent bool
+	index      int
 }
 
 func (j *Job) Run() {
@@ -19,6 +20,13 @@ func (j *Job) Run() {
 		return
 	}
 	fmt.Printf("Running a total of %d tasks\n", len(j.Tasks))
+
+	if !j.Concurrent {
+		for idx, task := range j.Tasks {
+			fmt.Printf("Running Task %d: %s\n", idx, task.Desc())
+			task.Run()
+		}
+	}
 
 	wg := sync.WaitGroup{}
 	for idx, task := range j.Tasks {

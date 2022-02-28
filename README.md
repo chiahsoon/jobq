@@ -17,7 +17,7 @@ A basic job queue implemented in Go.
 2. `PriorityQueue` is provided as a default to use with `JobQ`. 
     * It is heap-based, so it implements the methods necessary for [container/heap](https://pkg.go.dev/container/heap).
 3. `Job.Priority` can be anything as long as they can be converted/encoded to `int` (string, date, numbers, etc.).
-4. Jobs run sequentially (due to priority), but tasks in a job run concurrently.
+4. Jobs must run sequentially (due to priority), but tasks in a job can run either sequentially or concurrently.
 
 ### Examples
 Do take a look at `jobq_test.go` to see how `JobQ` is used.
