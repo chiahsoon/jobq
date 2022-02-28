@@ -17,6 +17,15 @@ type SetNumTask struct {
 func (t *SetNumTask) Desc() string { return t.Name }
 func (t *SetNumTask) Run()         { (*t.DestVal) = t.SrcVal }
 
+type HeavyIncrTask struct {
+	Name    string
+	Delay   time.Duration
+	DestVal *int
+}
+
+func (t *HeavyIncrTask) Desc() string { return t.Name }
+func (t *HeavyIncrTask) Run()         { time.Sleep(t.Delay); (*t.DestVal) += 1 }
+
 func TestBasicSetNumTask(t *testing.T) {
 	assert := assert.New(t)
 
@@ -61,9 +70,34 @@ func TestPriority(t *testing.T) {
 	jq := jobq.NewJobQ(0, &queue)
 
 	go jq.Watch()
-	jq.Add(&higherPriorityJob)
 	time.Sleep(time.Millisecond)
 
 	assert.Equal(higherPriorityTask.SrcVal, val, "Higher priority task should have ran first")
 	assert.NotEqual(lowerPriorityTask.SrcVal, val, "Lower priority task should not have ran first")
+}
+
+func TestTasksInSameConcurrentJobShouldRunConcurrently(t *testing.T) {
+	assert := assert.New(t)
+
+	originalVal := 10
+	val := originalVal
+	delay := time.Millisecond * 5
+	job := jobq.Job{
+		Label: "Lower Priority Job",
+		Tasks: []jobq.Task{
+			&HeavyIncrTask{Name: "1", Delay: delay, DestVal: &val},
+			&HeavyIncrTask{Name: "2", Delay: delay, DestVal: &val},
+			&HeavyIncrTask{Name: "3", Delay: delay, DestVal: &val},
+		},
+		Priority: 0,
+	}
+
+	queue := jobq.PriorityQueue{}
+	jq := jobq.NewJobQ(0, &queue)
+
+	go jq.Watch()
+	jq.Add(&job)
+	time.Sleep(delay + time.Millisecond)
+
+	assert.Equal(originalVal+3, val, "Tasks should have completed already")
 }
