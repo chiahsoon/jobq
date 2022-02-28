@@ -31,7 +31,7 @@ func TestBasicSetNumTask(t *testing.T) {
 	queue := jobq.PriorityQueue{}
 	jq := jobq.NewJobQ(0, &queue)
 
-	jq.Watch(false)
+	go jq.Watch()
 	jq.Add(&job)
 	time.Sleep(time.Millisecond) // Wait for job to end
 
@@ -60,7 +60,7 @@ func TestPriority(t *testing.T) {
 	queue.PushJob(&higherPriorityJob)
 	jq := jobq.NewJobQ(0, &queue)
 
-	jq.Watch(false)
+	go jq.Watch()
 	jq.Add(&higherPriorityJob)
 	time.Sleep(time.Millisecond)
 
